@@ -44,7 +44,7 @@ public class BumpGaugeActivity extends AppCompatActivity
                 public void run() {
                     updateGauge();
                 }
-            }, 10, 1000);
+            }, 10, 750);
         }
     }
 
