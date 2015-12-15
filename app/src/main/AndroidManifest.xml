@@ -22,6 +22,8 @@
         </activity>
 
         <activity android:name=".BluetoothActivity"/>
+        <activity android:name=".BumpGaugeActivity"/>
+        <activity android:name=".BumpListenerActivity"/>
     </application>
 
 </manifest>

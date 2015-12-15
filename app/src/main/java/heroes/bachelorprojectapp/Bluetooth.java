@@ -45,7 +45,7 @@ public class Bluetooth {
 
     private static DataReceiveCallback dataReceiveCallback;
 
-    private BluetoothDevice connectedDevice = null;
+    static private BluetoothDevice connectedDevice = null;
     private int reconnectionAttempts = 0;
     private boolean recoverConnectionIfLost = true;
 
@@ -91,7 +91,7 @@ public class Bluetooth {
             }
         };
 
-        receiveThread = getReceiverThreadInstance();
+//        receiveThread = getReceiverThreadInstance();
     }
 
     public void setDataReceiveCallback(DataReceiveCallback drc)
@@ -186,15 +186,15 @@ public class Bluetooth {
         });
     }
 
-    public void listenForData()
+/*    public void listenForData()
     {
         try {
             inputStream = btSocket.getInputStream();
-            beginListenForData();
+            //startListenForData();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public void scanForDevices()
     {
@@ -242,16 +242,16 @@ public class Bluetooth {
         {
             String action = intent.getAction();
 
-            if(BluetoothDevice.ACTION_ACL_CONNECTED.equals(action))
-            {
-                Log.d(DEBUGTAG, "CONNECTED");
-            }
             if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action))
             {
                 Log.d(DEBUGTAG, "DISCONNECTED");
                 Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT).show();
 
-                disconnected();
+                //disconnected();
+            }
+            if(BluetoothDevice.ACTION_ACL_CONNECTED.equals(action))
+            {
+                Log.d(DEBUGTAG, "CONNECTED");
             }
 
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action))
@@ -267,11 +267,14 @@ public class Bluetooth {
                 //bluetooth device found
                 BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                devices.add(device);
+                if(null != device.getName())
+                {
+                    devices.add(device);
 
-                String name = device.getName();
-                bluetoothDeviceNames.add(name);
-                Log.d(DEBUGTAG, "Found device: " + device.getName());
+                    String name = device.getName();
+                    bluetoothDeviceNames.add(name);
+                    Log.d(DEBUGTAG, "Found device: " + device.getName());
+                }
             }
         }
     };
@@ -298,16 +301,23 @@ public class Bluetooth {
         });
     }
 
-    void beginListenForData()
+    public void startListenForData()
     {
-        final Handler handler = new Handler();
-        final byte delimiter = 10; //This is the ASCII code for a newline character
+        try {
+            inputStream = btSocket.getInputStream();
 
-        stopWorker = false;
-        readBufferPosition = 0;
-        readBuffer = new byte[1024];
+            stopWorker = false;
+            readBufferPosition = 0;
+            readBuffer = new byte[1024];
 
-        //receiveThread.start();
+            receiveThread = getReceiverThreadInstance();
+            receiveThread.start();
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void connectToDevice(final BluetoothDevice device)
@@ -317,6 +327,7 @@ public class Bluetooth {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         connectedDevice = device;
 
         activity.runOnUiThread(new Runnable() {
@@ -332,7 +343,7 @@ public class Bluetooth {
                     btSocket.connect();
                     Toast.makeText(context, "Connected to: " + device.getName(), Toast.LENGTH_SHORT).show();
                     reconnectionAttempts = 0;
-                    listenForData();
+                    //listenForData();
                 } catch (Exception e) {
                     try {
                         resetConnection();
@@ -343,9 +354,9 @@ public class Bluetooth {
                     Toast.makeText(context, "Connection failed", Toast.LENGTH_SHORT).show();
                     Log.d(DEBUGTAG, "Socket creation failed");
 
-                    //e.printStackTrace();
+                    e.printStackTrace();
 
-                    disconnected();
+                    //disconnected();
                 }
             }
         });
@@ -389,6 +400,7 @@ public class Bluetooth {
             }
             else
             {
+                recoverConnectionIfLost = false;
                 reconnectionAttempts = 0;
             }
         }
@@ -412,6 +424,22 @@ public class Bluetooth {
         filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
 
         activity.registerReceiver(mReceiver, filter);
+    }
+
+    public String getBluetoothDeviceName()
+    {
+        if(connectedDevice != null)
+            return connectedDevice.getName();
+        else return "No device connected";
+    }
+
+    public void stopListeningForData()
+    {
+        if(receiveThread != null)
+        {
+            receiveThread.interrupt();
+            receiveThread = null;
+        }
     }
 }
 

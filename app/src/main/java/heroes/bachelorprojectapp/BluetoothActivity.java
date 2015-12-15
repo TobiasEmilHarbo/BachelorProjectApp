@@ -49,50 +49,6 @@ public class BluetoothActivity extends Activity {
 
         createOnClickListeners();
         bluetooth.checkBluetoothAdapter();
-
-        bluetoothButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerBump();
-            }
-        });
-    }
-
-    public void registerBump()
-    {
-        final long unixTime = System.currentTimeMillis();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String imei = telephonyManager.getDeviceId();
-
-                RestRequest request = new RestRequest();
-
-                try {
-                    List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-                    parameters.add(new BasicNameValuePair("imei", imei));
-                    parameters.add(new BasicNameValuePair("timestamp", Long.toString(unixTime)));
-
-                    request.post(
-                            "http://ttw.idyia.dk/register_bump",
-                            parameters
-                    );
-
-                    Boolean response = request.getResponse().getBoolean("success");
-
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
     }
 
     public void createOnClickListeners()
