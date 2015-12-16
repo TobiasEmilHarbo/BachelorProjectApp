@@ -20,6 +20,11 @@ public class RestResponse {
         return data;
     }
 
+    public String getData()
+    {
+        return data;
+    }
+
     public JSONObject asJSON() throws JSONException
     {
         return new JSONObject(data);

@@ -2,6 +2,7 @@ package heroes.bachelorprojectapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -69,6 +70,7 @@ public class BumpListenerActivity extends AppCompatActivity
             @Override
             public void run() {
 
+                Looper.prepare();
                 TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                 String imei = telephonyManager.getDeviceId();
                 RestRequest request = new RestRequest();
@@ -119,6 +121,8 @@ public class BumpListenerActivity extends AppCompatActivity
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    String errorResponse = request.getResponse().getData();
+                    Toast.makeText(getApplicationContext(), "Error response: "+errorResponse, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
