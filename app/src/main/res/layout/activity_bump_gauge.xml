@@ -23,4 +23,20 @@
         android:singleLine="true"
         android:textSize="100dp"
         android:gravity="center_horizontal" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fake bump"
+        android:id="@+id/fakeBumpButton"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset all"
+        android:id="@+id/resetAllButton"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp" />
 </LinearLayout>

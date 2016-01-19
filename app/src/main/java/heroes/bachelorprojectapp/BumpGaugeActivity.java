@@ -3,6 +3,8 @@ package heroes.bachelorprojectapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -23,6 +25,8 @@ public class BumpGaugeActivity extends AppCompatActivity
     private static final String DEBUGTAG = "BumpGaugeActivity";
     private TextView gauge;
     private Timer updateGaugeTimer;
+    private Button fakeBumpButton;
+    private Button resetAllButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,34 @@ public class BumpGaugeActivity extends AppCompatActivity
         setContentView(R.layout.activity_bump_gauge);
 
         gauge = (TextView) findViewById(R.id.bumpGauge);
+        fakeBumpButton = (Button) findViewById(R.id.fakeBumpButton);
+        resetAllButton = (Button) findViewById(R.id.resetAllButton);
+
+        fakeBumpButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                RestRequest request = new RestRequest();
+
+                try {
+                    request.get("http://ttw.idyia.dk/fake_bump");
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        resetAllButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                RestRequest request = new RestRequest();
+
+                try {
+                    request.get("http://ttw.idyia.dk/reset_bump_records");
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

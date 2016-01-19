@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
     private Button bluetoothButton;
     private Button bumpGaugeButton;
     private Button bumpListenerButton;
+    private Button activityAccelerometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         bluetoothButton     = (Button) findViewById(R.id.bluetooth);
         bumpGaugeButton     = (Button) findViewById(R.id.bumpGauge);
         bumpListenerButton  = (Button) findViewById(R.id.listenForBumps);
+        activityAccelerometer = (Button) findViewById(R.id.activityAccelerometer);
 
         bluetoothButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, BumpListenerActivity.class);
                 MainActivity.this.startActivity(i);
+            }
+        });
+
+        activityAccelerometer.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, ActivityAccelerometer.class);
+                startActivity(i);
             }
         });
     }

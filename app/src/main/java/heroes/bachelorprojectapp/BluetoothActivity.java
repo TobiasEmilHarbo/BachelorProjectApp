@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import heroes.bachelorprojectapp.rest.RestRequest;
+import heroes.bachelorprojectapp.rest.RestResponse;
 
 /**
  * Created by Tobias on 21-11-2015.
@@ -30,7 +33,6 @@ public class BluetoothActivity extends Activity {
     Button scanForDevices;
 
     private Bluetooth bluetooth;
-    private Button bluetoothButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,7 +44,6 @@ public class BluetoothActivity extends Activity {
         state1 = (Button) findViewById(R.id.state1);
         state3 = (Button) findViewById(R.id.state3);
         state5 = (Button) findViewById(R.id.state5);
-        bluetoothButton = (Button) findViewById(R.id.testBump);
 
         bluetooth = new Bluetooth(this);
         bluetooth.registerReceiver();
