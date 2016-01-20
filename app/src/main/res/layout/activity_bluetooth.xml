@@ -6,19 +6,26 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Scan for devices"
         android:layout_marginTop="50dp"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/scanForDevices"/>
+        android:id="@+id/scanForDevices"
+        android:layout_marginBottom="50dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Test bracelet:"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="State 1"
         android:id="@+id/state1"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp" />
+        android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="wrap_content"
@@ -33,5 +40,12 @@
         android:text="State 5"
         android:layout_gravity="center_horizontal"
         android:id="@+id/state5" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stahp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/stop" />
 
 </LinearLayout>

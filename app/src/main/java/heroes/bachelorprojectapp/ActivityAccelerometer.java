@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class ActivityAccelerometer extends Activity implements SensorEventListen
     private int logDivideFactor = 20;
 
     private Bluetooth bluetooth;
+    private Timer timer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,55 +61,53 @@ public class ActivityAccelerometer extends Activity implements SensorEventListen
         bluetooth = new Bluetooth(this);
         bluetooth.registerReceiver();
 
-         new Timer().scheduleAtFixedRate(new TimerTask() {
-             @Override
-             public void run() {
-                 runOnUiThread(new Runnable() {
-                     @Override
-                     public void run() {
-                         try {
-                             int lvlOfComfort = getLevelOfComfort();
+        timer = new Timer();
 
-                             try
-                             {
-                                 String[] latestLog = evaluatedLog.get(evaluatedLog.size()-1);
-                                 String[] secondLatestLog = evaluatedLog.get(evaluatedLog.size()-2);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            int lvlOfComfort = getLevelOfComfort();
 
-                                 int latestLogType = Integer.parseInt(latestLog[1]);
-                                 int secondLatestLogType = Integer.parseInt(secondLatestLog[1]);
+                            try {
+                                String[] latestLog = evaluatedLog.get(evaluatedLog.size() - 1);
+                                String[] secondLatestLog = evaluatedLog.get(evaluatedLog.size() - 2);
 
-                                 if(
-                                 (lvlOfComfort == 5
-                                 && latestLogType == STILL
-                                 && secondLatestLogType == STILL)
-                                         ||
-                                 (lvlOfComfort == 1
-                                 && latestLogType == MOVING
-                                 && secondLatestLogType == MOVING))
-                                 {
-                                     lvlOfComfort = 3;
-                                 }
-                             }
-                             catch(Exception e)
-                             {
-                                 e.printStackTrace();
-                                 //ignore
-                             }
+                                int latestLogType = Integer.parseInt(latestLog[1]);
+                                int secondLatestLogType = Integer.parseInt(secondLatestLog[1]);
 
-                             //String[] lastLog = evaluatedLog.get(0);
+                                if (
+                                        (lvlOfComfort == 5
+                                                && latestLogType == STILL
+                                                && secondLatestLogType == STILL)
+                                                ||
+                                                (lvlOfComfort == 1
+                                                        && latestLogType == MOVING
+                                                        && secondLatestLogType == MOVING)) {
+                                    lvlOfComfort = 3;
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                //ignore
+                            }
 
-                             //int activityType = Integer.parseInt(lastLog[1]);
-                             //activityLogView.setText(getActivityType(activityType));
+                            //String[] lastLog = evaluatedLog.get(0);
 
-                             comfortFactorView.setText(Integer.toString(lvlOfComfort));
-                             bluetooth.transmit(Integer.toString(lvlOfComfort));
-                         } catch (IndexOutOfBoundsException e) {
-                             //ignore
-                         }
-                     }
-                 });
-             }
-         }, 0, 500);
+                            //int activityType = Integer.parseInt(lastLog[1]);
+                            //activityLogView.setText(getActivityType(activityType));
+
+                            comfortFactorView.setText(Integer.toString(lvlOfComfort));
+                            bluetooth.transmit(Integer.toString(lvlOfComfort));
+                        } catch (IndexOutOfBoundsException e) {
+                            //ignore
+                        }
+                    }
+                });
+            }
+        }, 0, 500);
     }
 
     protected void onResume()
@@ -124,7 +124,9 @@ public class ActivityAccelerometer extends Activity implements SensorEventListen
     protected void onDestroy()
     {
         super.onDestroy();
+        bluetooth.transmit("0");
         bluetooth.unregisterReceiver();
+        timer.cancel();
         //mSensorManager.unregisterListener(this);
     }
 
@@ -340,7 +342,6 @@ public class ActivityAccelerometer extends Activity implements SensorEventListen
         }
 
         return t;
-
     }
 /*
     private void evaluateDiffLogFirst()

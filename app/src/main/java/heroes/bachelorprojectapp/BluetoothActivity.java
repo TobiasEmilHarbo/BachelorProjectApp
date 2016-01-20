@@ -33,6 +33,7 @@ public class BluetoothActivity extends Activity {
     Button scanForDevices;
 
     private Bluetooth bluetooth;
+    Button stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,6 +45,7 @@ public class BluetoothActivity extends Activity {
         state1 = (Button) findViewById(R.id.state1);
         state3 = (Button) findViewById(R.id.state3);
         state5 = (Button) findViewById(R.id.state5);
+        stop = (Button) findViewById(R.id.stop);
 
         bluetooth = new Bluetooth(this);
         bluetooth.registerReceiver();
@@ -81,11 +83,19 @@ public class BluetoothActivity extends Activity {
                 bluetooth.transmit("5");
             }
         });
+
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bluetooth.transmit("0");
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        bluetooth.transmit("0");
         bluetooth.unregisterReceiver();
     }
 }
